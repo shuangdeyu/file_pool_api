@@ -1,0 +1,17 @@
+<seelog>
+    <outputs formatid="common">
+        <filter levels="info">
+            <rollingfile type="date" filename="data/log-app/req.log" datepattern="2006.02.01" fullname="true" maxrolls="30"/>
+        </filter>
+        <filter levels="error">
+            <rollingfile type="date" filename="data/log-app/out.log" datepattern="2006.02.01" fullname="true" maxrolls="30"/>
+        </filter>
+        <!--<filter levels="debug">-->
+        <filter levels="critical">
+            <rollingfile type="date" filename="data/log-app/rpc.log" datepattern="2006.02.01" fullname="true" maxrolls="30"/>
+        </filter>
+    </outputs>
+    <formats>
+        <format id="common" format="%Date/%Time [%LEV] %Msg%n"/>
+    </formats>
+</seelog>
