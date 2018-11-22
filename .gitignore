@@ -12,4 +12,4 @@
 *.out
 .idea/
 data/log-app
-conf/conf.yaml
+conf/config.yaml
