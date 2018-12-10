@@ -15,4 +15,8 @@ func GetUserInfo(c *gin.Context) {
 		"msg":  "success",
 		"data": ret["data"],
 	})
+
+	if ret["error"] != service.SERVICE_SUCCESS {
+
+	}
 }

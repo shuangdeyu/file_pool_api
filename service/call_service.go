@@ -9,9 +9,6 @@ import (
 )
 
 const (
-	// 正常接口返回
-	SERVICE_SUCCESS = 0
-
 	// 服务名称
 	FilePoolService = "FilePoolService"
 )
