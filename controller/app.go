@@ -59,6 +59,7 @@ func AppIndex(c *gin.Context) {
 	// 参数解密
 	token := strings.TrimSpace(c.PostForm("token"))
 	param := strings.TrimSpace(c.PostForm("param"))
+	sign := strings.TrimSpace(c.PostForm("sign"))
 	e, ret := service.DecryptParam(param, token, AppInitParam.Ip)
 	if e != service.SERVICE_SUCCESS {
 		OutPut(conf.DECRYPT_ERROR, c, OutData, AppInitParam)
