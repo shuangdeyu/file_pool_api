@@ -19,6 +19,14 @@ func ReadRequest() map[string]interface{} {
 			"method": "Register", // 注册
 			"valid":  [2]bool{true, false},
 		},
+		"102": map[string]interface{}{
+			"method": "LoginOut", // 退出登录
+			"valid":  [2]bool{true, true},
+		},
+		"103": map[string]interface{}{
+			"method": "UserInfo", // 用户信息
+			"valid":  [2]bool{true, true},
+		},
 	}
 	return app
 }

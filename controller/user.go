@@ -2,21 +2,38 @@ package controller
 
 import (
 	"file_pool_api/service"
-	"github.com/gin-gonic/gin"
 )
 
 /**
- * 获取用户信息
+ * 登录 100
  */
-func GetUserInfo(c *gin.Context) {
+func Login(AppInitParam *AppParam) map[string]interface{} {
+	return nil
+}
+
+/**
+ * 注册 101
+ */
+func Register(AppInitParam *AppParam) map[string]interface{} {
+	return nil
+}
+
+/**
+ * 退出登录 102
+ */
+func LoginOut(AppInitParam *AppParam) map[string]interface{} {
+	return nil
+}
+
+/**
+ * 获取用户信息 103
+ */
+func UserInfo(AppInitParam *AppParam) map[string]interface{} {
 	ret := service.Get_user_info(1)
-	c.JSON(200, gin.H{
-		"e":    0,
-		"msg":  "success",
-		"data": ret["data"],
-	})
 
 	if ret["error"] != service.SERVICE_SUCCESS {
 
 	}
+
+	return ret["data"].(map[string]interface{})
 }

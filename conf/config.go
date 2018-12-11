@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+const (
+	PUBLIC_KEY_PATH  = "data/pub.key"
+	PRIVATE_KEY_PATH = "data/pri.key"
+)
+
 // 配置项
 type Configuration struct {
 	ProxyServer   string        `yaml:"proxy_server"`   // rpc地址

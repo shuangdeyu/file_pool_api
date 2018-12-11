@@ -57,9 +57,9 @@ func AppIndex(c *gin.Context) {
 	need_login := va[1] // 是否需要登录标志
 
 	// 参数解密
-	token := strings.TrimSpace(c.PostForm("token"))
-	param := strings.TrimSpace(c.PostForm("param"))
-	sign := strings.TrimSpace(c.PostForm("sign"))
+	token := strings.TrimSpace(c.PostForm("token"))     // 客户端唯一码
+	param := strings.TrimSpace(c.PostForm("param"))     // 加密的参数
+	encrypt := strings.TrimSpace(c.PostForm("encrypt")) // 请求合法验证码
 	e, ret := service.DecryptParam(param, token, AppInitParam.Ip)
 	if e != service.SERVICE_SUCCESS {
 		OutPut(conf.DECRYPT_ERROR, c, OutData, AppInitParam)
@@ -68,6 +68,11 @@ func AppIndex(c *gin.Context) {
 	AppInitParam.RequestParam = ret["param_arr"].(map[string]string)
 	// 记录请求日志
 	delete(ret["param_write_log"].(map[string]string), "password")
+	helpers.WriteAppInfoLog(AppInitParam.Action +
+		", ip:" + AppInitParam.Ip +
+		", request:" + comhelper.JsonEncode(ret["param_write_log"]) +
+		", and user_id:" + AppInitParam.RequestParam["user_id"] +
+		" token: " + token)
 
 	/*~!@#$% 本地测试，关闭验证 ~!@#$%*/
 	if local := strings.TrimSpace(c.PostForm("local")); local == "1" {
@@ -76,15 +81,116 @@ func AppIndex(c *gin.Context) {
 	}
 	// 检测参数是否正确
 	if need_check {
-
+		sign := ""
+		if AppInitParam.RequestParam["sign"] != "" {
+			sign = AppInitParam.RequestParam["sign"]
+		}
+		tp := AppInitParam.RequestParam["timestamp"]
+		e = _valid_param(ret["param_write_sign"].(map[string]string), ret["param_decrypt_key"].([]string), encrypt, sign, tp, AppInitParam)
+		if e != conf.SUCCESS {
+			OutPut(e, c, OutData, AppInitParam)
+			return
+		}
 	}
 	// 检测是否需要登录
 	if need_login {
-
+		if ok := _valid_login(AppInitParam); !ok {
+			OutPut(conf.USER_NOT_LOGIN_ERROR, c, OutData, AppInitParam)
+			return
+		}
 	}
 
 	// 调用处理函数
+	/*~!@#$% 本地测试，重置param参数 ~!@#$%*/
+	if local := strings.TrimSpace(c.PostForm("local")); local == "1" {
+		AppInitParam.RequestParam["user_id"] = c.PostForm("user_id")
+		AppInitParam.RequestParam["token"] = c.PostForm("token")
+		AppInitParam.RequestParam["encrypt"] = c.PostForm("encrypt")
+		AppInitParam.RequestParam["action"] = c.PostForm("action")
+	}
+	data, code := hook(AppInitParam)
 
+	if data != nil {
+		if data["e"] != nil {
+			code = data["e"].(int)
+		}
+		if data["msg"] != nil {
+			OutData.Msg = data["msg"].(string)
+			OutData.Data = nil
+		} else {
+			if data["data"] != nil && data["e"] != nil {
+				code = data["e"].(int)
+				OutData.Data = data["data"]
+			} else {
+				if data["e"] == nil {
+					delete(data, "e")
+					OutData.Data = data
+				}
+			}
+		}
+	}
+	// 请求日志处理入库
+
+	OutPut(code, c, OutData, AppInitParam)
+	return
+}
+
+/**
+ * 调用接口处理函数
+ */
+var FuncsMap = map[string]func(param *AppParam) map[string]interface{}{
+	"Login":    Login,    // 登录 100
+	"Register": Register, // 注册 101
+	"LoginOut": LoginOut, // 退出登录 102
+	"UserInfo": UserInfo, // 用户信息 103
+}
+
+func hook(AppInitParam *AppParam) (map[string]interface{}, int) {
+	method, ok := AppInitParam.RequestConfig["method"].(string)
+	if !ok || method == "" {
+		helpers.WriteAppInfoLog("config:" + comhelper.JsonEncode(AppInitParam.RequestConfig) + " class or method not set")
+		return nil, conf.SERVER_ERROR
+	}
+	data := FuncsMap[method](AppInitParam)
+	return data, conf.SUCCESS
+}
+
+/**
+ * 校验是否需要登录
+ */
+func _valid_login(AppInitParam *AppParam) bool {
+	if AppInitParam.RequestParam["user_id"] == "" || !comhelper.Check_uuid(AppInitParam.RequestParam["user_id"]) {
+		return false
+	}
+	return true
+}
+
+/**
+ * 校验参数
+ * @param valid_arr map[string]string 解密的参数
+ * @param encrypt string 请求合法码
+ * @param sign string 签名
+ * @param timestamp string 时间戳
+ * @return e int 状态码
+ */
+func _valid_param(valid_arr map[string]string, valid_arr_key []string, encrypt, sign, timestamp string, AppInitParam *AppParam) int {
+	// 校验请求头信息
+	en := comhelper.Md5(comhelper.Md5("file_pool{z*2!H&akQ$cM|0_0com") + comhelper.Md5("webapp"+AppInitParam.Action) + timestamp)
+	if en != encrypt {
+		// 记录日志
+		helpers.WriteAppInfoLog("encrypt valid failure;post encrypt: " + encrypt + ", " + en)
+		return conf.ACCESS_DENY_ERROR
+	}
+	// 校验参数签名信息
+	delete(valid_arr, "sign")
+	if len(valid_arr) > 0 {
+		sign_mobile := comhelper.Md5(comhelper.Array2UrlString(valid_arr, valid_arr_key, "sign"))
+		if sign != sign_mobile {
+			helpers.WriteAppInfoLog("valid param failure; sign:" + sign + ";sign_app:" + sign_mobile)
+			return conf.INVALID_PARAM_ERROR
+		}
+	}
+	return 0
 }
 
 /**
@@ -106,7 +212,8 @@ func OutPut(e int, c *gin.Context, OutData *Out, AppInitParam *AppParam) {
 		"data": OutData.Data,
 	}
 	helpers.WriteAppErrorLog(AppInitParam.Action + " " + comhelper.JsonEncode(result))
-	if e != conf.SUCCESS && OutData.Data == nil {
+	//if e != conf.SUCCESS && OutData.Data == nil {
+	if OutData.Data == nil {
 		c.JSON(200, gin.H{
 			"e":   e,
 			"msg": OutData.Msg,

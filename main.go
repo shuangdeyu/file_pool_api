@@ -30,9 +30,14 @@ func main() {
 
 	// 跨域中间件
 	r.Use(CorsMiddleware())
-
+	// 业务接口入口
 	r.POST("/app/*action", controller.AppIndex)
 	r.POST("/app", controller.AppIndex)
+	// 其它接口
+	r.POST("/get_token", controller.GetToken)         // 获取token
+	r.POST("/get_encrypt", controller.GetEncrypt)     // 获取encrypt
+	r.POST("/get_sign", controller.GetSign)           // 获取sign
+	r.POST("/encrypt_param", controller.EncryptParam) // 参数加密
 
 	r.Run(":6001")
 }
@@ -58,7 +63,7 @@ func CorsMiddleware() gin.HandlerFunc {
 			c.Header("Access-Control-Allow-Methods", "GET, OPTIONS, POST, PUT, DELETE")
 			c.Set("content-type", "application/json")
 		}
-		//放行所有OPTIONS方法
+		// 放行所有OPTIONS方法
 		if method == "OPTIONS" {
 			c.JSON(http.StatusOK, "Options Request!")
 		}
