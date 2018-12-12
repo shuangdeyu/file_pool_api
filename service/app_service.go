@@ -70,7 +70,7 @@ func DecryptParam(param, token, ip string) (int, map[string]interface{}) {
 	}
 	// 获取用户缓存
 	ret := GetByMap(CACHE_APP_TOKEN + token)
-	if ret != nil {
+	if ret == nil {
 		param_arr["user_id"] = ""
 	} else {
 		param_arr["user_id"] = ret["user_id"].(string)

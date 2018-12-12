@@ -159,7 +159,8 @@ func hook(AppInitParam *AppParam) (map[string]interface{}, int) {
  * 校验是否需要登录
  */
 func _valid_login(AppInitParam *AppParam) bool {
-	if AppInitParam.RequestParam["user_id"] == "" || !comhelper.Check_uuid(AppInitParam.RequestParam["user_id"]) {
+	user_id := AppInitParam.RequestParam["user_id"]
+	if user_id == "" || comhelper.StringToInt(user_id) <= 0 {
 		return false
 	}
 	return true

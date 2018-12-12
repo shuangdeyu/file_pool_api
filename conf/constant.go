@@ -23,7 +23,7 @@ const (
 	INVALID_CAPTCHA_ERROR               = 200104 // 验证码错误
 	MOBILE_REG_ALREADY_ERROR            = 200105 // 手机号码已经注册
 	PASSWORD_RESET_FAILURE_ERROR        = 200106 // 修改密码失败
-	IDENTIFY_NOT_EXIST_ERROR            = 200107 // 用户不存在
+	USER_NOT_EXIST_ERROR                = 200107 // 用户不存在
 	SEND_SMS_TOO_FAST_ERROR             = 200108 // 发送短信太频繁
 	SEND_SMS_MORE_THAN_MAX_TIMES_ERROR  = 200109 // 短信发送频率超过限制，系统将冻结你的账号
 	USER_ALREADY_REALNAME_AUTH          = 200110 // 用户已经实名认证
@@ -39,6 +39,7 @@ const (
 	USER_ACCOUNT_NOT_EXIST_ERROR        = 200119 // 账户不存在
 	USER_PASSWORD_CHECK_FAILED_ERROR    = 200120 // 校验密码错误
 	USER_PAY_PASSWORD_NOT_EXIST_ERROR   = 200121 // 支付密码未设置
+	USER_REG_ALREADY_ERROR              = 200122 // 用户名已被注册
 )
 
 var ERR_MSG_MAP map[int]string
@@ -68,7 +69,7 @@ func GetAppConst(e int) string {
 		ERR_MSG_MAP[INVALID_CAPTCHA_ERROR] = "验证码错误"
 		ERR_MSG_MAP[MOBILE_REG_ALREADY_ERROR] = "手机号码已经注册"
 		ERR_MSG_MAP[PASSWORD_RESET_FAILURE_ERROR] = "修改密码失败"
-		ERR_MSG_MAP[IDENTIFY_NOT_EXIST_ERROR] = "用户不存在"
+		ERR_MSG_MAP[USER_NOT_EXIST_ERROR] = "用户不存在"
 		ERR_MSG_MAP[SEND_SMS_TOO_FAST_ERROR] = "发送短信太频繁,60秒内只能发送一次"
 		ERR_MSG_MAP[SEND_SMS_MORE_THAN_MAX_TIMES_ERROR] = "短信发送频率超过限制，系统将冻结你的账号"
 		ERR_MSG_MAP[USER_ALREADY_REALNAME_AUTH] = "用户已经实名认证"
@@ -84,6 +85,7 @@ func GetAppConst(e int) string {
 		ERR_MSG_MAP[USER_ACCOUNT_NOT_EXIST_ERROR] = "账户不存在"
 		ERR_MSG_MAP[USER_PASSWORD_CHECK_FAILED_ERROR] = "密码不正确"
 		ERR_MSG_MAP[USER_PAY_PASSWORD_NOT_EXIST_ERROR] = "请先设置支付密码"
+		ERR_MSG_MAP[USER_REG_ALREADY_ERROR] = "该用户名已被注册"
 	}
 
 	if msg, ok := ERR_MSG_MAP[e]; ok {
