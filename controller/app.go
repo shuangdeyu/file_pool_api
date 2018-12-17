@@ -107,6 +107,10 @@ func AppIndex(c *gin.Context) {
 		AppInitParam.RequestParam["token"] = c.PostForm("token")
 		AppInitParam.RequestParam["encrypt"] = c.PostForm("encrypt")
 		AppInitParam.RequestParam["action"] = c.PostForm("action")
+		AppInitParam.RequestParam["search"] = c.PostForm("search")
+		AppInitParam.RequestParam["offset"] = c.PostForm("offset")
+		AppInitParam.RequestParam["limit"] = c.PostForm("limit")
+		AppInitParam.RequestParam["pool_id"] = c.PostForm("pool_id")
 	}
 	data, code := hook(AppInitParam)
 
@@ -139,10 +143,13 @@ func AppIndex(c *gin.Context) {
  * 调用接口处理函数
  */
 var FuncsMap = map[string]func(param *AppParam) map[string]interface{}{
-	"Login":    Login,    // 登录 100
-	"Register": Register, // 注册 101
-	"LoginOut": LoginOut, // 退出登录 102
-	"UserInfo": UserInfo, // 用户信息 103
+	"Login":           Login,           // 登录 100
+	"Register":        Register,        // 注册 101
+	"LoginOut":        LoginOut,        // 退出登录 102
+	"UserInfo":        UserInfo,        // 用户信息 103
+	"UserPoolList":    UserPoolList,    // 获取用户池列表 150
+	"FileList":        FileList,        // 获取公共文档列表 200
+	"CheckTokenLogin": CheckTokenLogin, // 检查客户端是否登录 400
 }
 
 func hook(AppInitParam *AppParam) (map[string]interface{}, int) {

@@ -39,7 +39,7 @@ func Register(name, password, email string) map[string]interface{} {
  * 获取用户基本信息
  * @param user_id int 用户id
  */
-func Get_user_info(user_id string) map[string]interface{} {
+func GetUserInfo(user_id string) map[string]interface{} {
 	data := _call(FilePoolService, "GetUserInfo", map[string]interface{}{
 		"UserId": comhelper.StringToInt(user_id),
 	})
@@ -50,7 +50,7 @@ func Get_user_info(user_id string) map[string]interface{} {
  * 根据用户名获取用户信息
  * @param name string 用户名
  */
-func Get_user_info_by_name(name string) map[string]interface{} {
+func GetUserInfoByName(name string) map[string]interface{} {
 	data := _call(FilePoolService, "GetUserInfoByName", map[string]interface{}{
 		"Name": name,
 	})

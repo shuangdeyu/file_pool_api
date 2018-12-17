@@ -9,6 +9,7 @@ func ReadRequest() map[string]interface{} {
 	 * 100~149 用户相关
 	 * 150~199 池相关
 	 * 200~249 文档相关
+	 * 400~449 其它
 	 */
 	app["app_request"] = map[string]interface{}{
 		"100": map[string]interface{}{
@@ -26,6 +27,18 @@ func ReadRequest() map[string]interface{} {
 		"103": map[string]interface{}{
 			"method": "UserInfo", // 用户信息
 			"valid":  [2]bool{true, true},
+		},
+		"150": map[string]interface{}{
+			"method": "UserPoolList", // 获取用户池列表
+			"valid":  [2]bool{true, true},
+		},
+		"200": map[string]interface{}{
+			"method": "FileList", // 公共文档列表
+			"valid":  [2]bool{true, false},
+		},
+		"400": map[string]interface{}{
+			"method": "CheckTokenLogin", // 检查客户端是否登录
+			"valid":  [2]bool{true, false},
 		},
 	}
 	return app

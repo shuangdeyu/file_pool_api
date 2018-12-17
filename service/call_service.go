@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"file_pool_api/conf"
+	"file_pool_api/helpers"
 	"github.com/smallnest/rpcx/client"
 	"helper_go/comhelper"
 	"log"
@@ -49,6 +50,7 @@ func CallService(service, method string, args map[string]interface{}) (Out, erro
  */
 func _call(service, method string, args map[string]interface{}) map[string]interface{} {
 	ret, _ := CallService(service, method, args)
+	helpers.WriteAppDebugLog(method + "[ERROR]: " + comhelper.JsonEncode(ret))
 	var data map[string]interface{}
 	data = make(map[string]interface{})
 	if ret.OutMsg != "" {

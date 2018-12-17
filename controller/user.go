@@ -69,7 +69,7 @@ func Register(AppInitParam *AppParam) map[string]interface{} {
 	}
 
 	// 验证用户名是否已被注册
-	ret := service.Get_user_info_by_name(name)
+	ret := service.GetUserInfoByName(name)
 	if ret["error"] == service.SERVICE_SUCCESS {
 		return map[string]interface{}{
 			"e": conf.USER_REG_ALREADY_ERROR,
@@ -111,7 +111,7 @@ func UserInfo(AppInitParam *AppParam) map[string]interface{} {
 	param := AppInitParam.RequestParam
 	user_id := param["user_id"]
 
-	ret := service.Get_user_info(user_id)
+	ret := service.GetUserInfo(user_id)
 	info, ok := ret["data"].(map[string]interface{})
 	if ret["error"] != service.SERVICE_SUCCESS || !ok || !(len(info) > 0) {
 		return map[string]interface{}{
