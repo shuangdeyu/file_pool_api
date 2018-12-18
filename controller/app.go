@@ -111,6 +111,12 @@ func AppIndex(c *gin.Context) {
 		AppInitParam.RequestParam["offset"] = c.PostForm("offset")
 		AppInitParam.RequestParam["limit"] = c.PostForm("limit")
 		AppInitParam.RequestParam["pool_id"] = c.PostForm("pool_id")
+		AppInitParam.RequestParam["type"] = c.PostForm("type")
+		AppInitParam.RequestParam["pool_user_id"] = c.PostForm("pool_user_id")
+		AppInitParam.RequestParam["name"] = c.PostForm("name")
+		AppInitParam.RequestParam["desc"] = c.PostForm("desc")
+		AppInitParam.RequestParam["icon"] = c.PostForm("icon")
+		AppInitParam.RequestParam["permit"] = c.PostForm("permit")
 	}
 	data, code := hook(AppInitParam)
 
@@ -148,6 +154,10 @@ var FuncsMap = map[string]func(param *AppParam) map[string]interface{}{
 	"LoginOut":        LoginOut,        // 退出登录 102
 	"UserInfo":        UserInfo,        // 用户信息 103
 	"UserPoolList":    UserPoolList,    // 获取用户池列表 150
+	"CreatePool":      CreatePool,      // 新建池 151
+	"DeletePool":      DeletePool,      // 删除池 152
+	"PoolInfo":        PoolInfo,        // 获取池信息 153
+	"EditPoolPermit":  EditPoolPermit,  // 修改池权限
 	"FileList":        FileList,        // 获取公共文档列表 200
 	"CheckTokenLogin": CheckTokenLogin, // 检查客户端是否登录 400
 }

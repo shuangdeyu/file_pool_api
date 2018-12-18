@@ -32,6 +32,22 @@ func ReadRequest() map[string]interface{} {
 			"method": "UserPoolList", // 获取用户池列表
 			"valid":  [2]bool{true, true},
 		},
+		"151": map[string]interface{}{
+			"method": "CreatePool", // 新建池
+			"valid":  [2]bool{true, true},
+		},
+		"152": map[string]interface{}{
+			"method": "DeletePool", // 删除池
+			"valid":  [2]bool{true, true},
+		},
+		"153": map[string]interface{}{
+			"method": "PoolInfo", // 获取池信息
+			"valid":  [2]bool{true, true},
+		},
+		"154": map[string]interface{}{
+			"method": "EditPoolPermit", // 修改池权限
+			"valid":  [2]bool{true, true},
+		},
 		"200": map[string]interface{}{
 			"method": "FileList", // 公共文档列表
 			"valid":  [2]bool{true, false},

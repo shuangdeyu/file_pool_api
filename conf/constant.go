@@ -40,6 +40,10 @@ const (
 	USER_PASSWORD_CHECK_FAILED_ERROR    = 200120 // 校验密码错误
 	USER_PAY_PASSWORD_NOT_EXIST_ERROR   = 200121 // 支付密码未设置
 	USER_REG_ALREADY_ERROR              = 200122 // 用户名已被注册
+
+	// 池相关
+	POOL_NOT_EXIST_ERROR        = 200200 // 池不存在
+	POOL_USER_CANT_DELETE_ERROR = 200201 // 您没有删除该池的权限
 )
 
 var ERR_MSG_MAP map[int]string
@@ -86,6 +90,10 @@ func GetAppConst(e int) string {
 		ERR_MSG_MAP[USER_PASSWORD_CHECK_FAILED_ERROR] = "密码不正确"
 		ERR_MSG_MAP[USER_PAY_PASSWORD_NOT_EXIST_ERROR] = "请先设置支付密码"
 		ERR_MSG_MAP[USER_REG_ALREADY_ERROR] = "该用户名已被注册"
+
+		// 文档池相关
+		ERR_MSG_MAP[POOL_NOT_EXIST_ERROR] = "文档池不存在"
+		ERR_MSG_MAP[POOL_USER_CANT_DELETE_ERROR] = "您没有删除该池的权限"
 	}
 
 	if msg, ok := ERR_MSG_MAP[e]; ok {
