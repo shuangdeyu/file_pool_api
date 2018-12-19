@@ -149,17 +149,20 @@ func AppIndex(c *gin.Context) {
  * 调用接口处理函数
  */
 var FuncsMap = map[string]func(param *AppParam) map[string]interface{}{
-	"Login":           Login,           // 登录 100
-	"Register":        Register,        // 注册 101
-	"LoginOut":        LoginOut,        // 退出登录 102
-	"UserInfo":        UserInfo,        // 用户信息 103
-	"UserPoolList":    UserPoolList,    // 获取用户池列表 150
-	"CreatePool":      CreatePool,      // 新建池 151
-	"DeletePool":      DeletePool,      // 删除池 152
-	"PoolInfo":        PoolInfo,        // 获取池信息 153
-	"EditPoolPermit":  EditPoolPermit,  // 修改池权限
-	"FileList":        FileList,        // 获取公共文档列表 200
-	"CheckTokenLogin": CheckTokenLogin, // 检查客户端是否登录 400
+	"Login":            Login,            // 登录 100
+	"Register":         Register,         // 注册 101
+	"LoginOut":         LoginOut,         // 退出登录 102
+	"UserInfo":         UserInfo,         // 用户信息 103
+	"UserPoolList":     UserPoolList,     // 获取用户池列表 150
+	"CreatePool":       CreatePool,       // 新建池 151
+	"DeletePool":       DeletePool,       // 删除池 152
+	"PoolInfo":         PoolInfo,         // 获取池信息 153
+	"EditPoolPermit":   EditPoolPermit,   // 修改池权限 154
+	"PoolMembers":      PoolMembers,      // 获取池成员列表 155
+	"AddPoolMembers":   AddPoolMembers,   // 添加池成员列表 156
+	"DeletePoolMember": DeletePoolMember, // 删除池成员 157
+	"FileList":         FileList,         // 获取公共文档列表 200
+	"CheckTokenLogin":  CheckTokenLogin,  // 检查客户端是否登录 400
 }
 
 func hook(AppInitParam *AppParam) (map[string]interface{}, int) {

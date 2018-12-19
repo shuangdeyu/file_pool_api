@@ -75,16 +75,22 @@ func DeletePool(AppInitParam *AppParam) map[string]interface{} {
 		}
 	}
 	info := ret["data"].(map[string]interface{})
-	// 判断权限并删除池
+	// 判断权限并删除池/退出池
 	if info["is_manager"].(string) != "Y" {
-		return map[string]interface{}{
-			"e": conf.POOL_USER_CANT_DELETE_ERROR,
+		// 管理员删除池
+		ret = service.DeleteUserPoolById(pool_user_id, info["pool_id"].(string), true)
+		if ret["error"] != service.SERVICE_SUCCESS {
+			return map[string]interface{}{
+				"e": conf.INVALID_PARAM_VALUE_ERROR,
+			}
 		}
-	}
-	ret = service.DeleteUserPoolById(pool_user_id)
-	if ret["error"] != service.SERVICE_SUCCESS {
-		return map[string]interface{}{
-			"e": conf.INVALID_PARAM_VALUE_ERROR,
+	} else {
+		// 非管理员退出池
+		ret = service.DeleteUserPoolById(pool_user_id, info["pool_id"].(string), false)
+		if ret["error"] != service.SERVICE_SUCCESS {
+			return map[string]interface{}{
+				"e": conf.INVALID_PARAM_VALUE_ERROR,
+			}
 		}
 	}
 
@@ -117,6 +123,7 @@ func EditPoolPermit(AppInitParam *AppParam) map[string]interface{} {
 	param := AppInitParam.RequestParam
 	permit := comhelper.DefaultParam(param["permit"], "")
 	pool_id := comhelper.DefaultParam(param["pool_id"], "0")
+	user_id := param["user_id"]
 
 	if permit == "" {
 		return map[string]interface{}{
@@ -125,7 +132,92 @@ func EditPoolPermit(AppInitParam *AppParam) map[string]interface{} {
 		}
 	}
 
+	// 权限判断
+	ret := service.GetPoolInfo(pool_id)
+	if ret["error"] != service.SERVICE_SUCCESS {
+		return map[string]interface{}{
+			"e": conf.POOL_NOT_EXIST_ERROR,
+		}
+	}
+	info := ret["data"].(map[string]interface{})
+	manager_id := info["manager_id"].(string)
+	if user_id != manager_id {
+		return map[string]interface{}{
+			"e": conf.POOL_USER_CANT_EDIT_ERROR,
+		}
+	}
 	// 修改权限值
+	ret = service.EditPoolInfo(pool_id, permit)
+	if ret["error"] != service.SERVICE_SUCCESS {
+		return map[string]interface{}{
+			"e": conf.INVALID_PARAM_ERROR,
+		}
+	}
+
+	return nil
+}
+
+/**
+ * 获取池成员列表 155
+ */
+func PoolMembers(AppInitParam *AppParam) map[string]interface{} {
+	param := AppInitParam.RequestParam
+	pool_id := comhelper.DefaultParam(param["pool_id"], "0")
+
+	ret := service.GetPoolMembers(pool_id)
+	list, ok := ret["data"].([]interface{})
+	if len(list) < 1 || !ok {
+		return map[string]interface{}{
+			"count": 0,
+			"list":  []interface{}{},
+		}
+	} else {
+		return map[string]interface{}{
+			"count": len(list),
+			"list":  list,
+		}
+	}
+}
+
+/**
+ * 添加池成员 156
+ */
+func AddPoolMembers(AppInitParam *AppParam) map[string]interface{} {
+
+	return nil
+}
+
+/**
+ * 删除池成员 157
+ */
+func DeletePoolMember(AppInitParam *AppParam) map[string]interface{} {
+	param := AppInitParam.RequestParam
+	pool_id := comhelper.DefaultParam(param["pool_id"], "0")
+	pool_user_id := comhelper.DefaultParam(param["pool_user_id"], "0")
+	user_id := param["user_id"]
+
+	// 权限判断
+	ret := service.GetPoolInfo(pool_id)
+	if ret["error"] != service.SERVICE_SUCCESS {
+		return map[string]interface{}{
+			"e": conf.POOL_NOT_EXIST_ERROR,
+		}
+	}
+	info := ret["data"].(map[string]interface{})
+	manager_id := info["manager_id"].(string)
+	if user_id != manager_id {
+		return map[string]interface{}{
+			"e":   conf.POOL_USER_CANT_EDIT_ERROR,
+			"msg": "你没有删除成员的权限",
+		}
+	}
+	// 删除成员
+	ret = service.DeletePoolMembers(pool_user_id, pool_id)
+	if ret["error"] != service.SERVICE_SUCCESS {
+		return map[string]interface{}{
+			"e": conf.INVALID_PARAM_ERROR,
+		}
+	}
 
 	return nil
 }

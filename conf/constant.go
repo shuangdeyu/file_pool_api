@@ -44,6 +44,7 @@ const (
 	// 池相关
 	POOL_NOT_EXIST_ERROR        = 200200 // 池不存在
 	POOL_USER_CANT_DELETE_ERROR = 200201 // 您没有删除该池的权限
+	POOL_USER_CANT_EDIT_ERROR   = 200202 // 您没有操作该池的权限
 )
 
 var ERR_MSG_MAP map[int]string
@@ -94,6 +95,7 @@ func GetAppConst(e int) string {
 		// 文档池相关
 		ERR_MSG_MAP[POOL_NOT_EXIST_ERROR] = "文档池不存在"
 		ERR_MSG_MAP[POOL_USER_CANT_DELETE_ERROR] = "您没有删除该池的权限"
+		ERR_MSG_MAP[POOL_USER_CANT_EDIT_ERROR] = "您没有操作该池的权限"
 	}
 
 	if msg, ok := ERR_MSG_MAP[e]; ok {
