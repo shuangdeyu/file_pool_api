@@ -26,7 +26,7 @@ func main() {
 		log.Println("加载系统配置出错！")
 	}
 
-	fmt.Println("test jenkins!")
+	fmt.Println("test jenkins!!")
 
 	gin.SetMode(gin.ReleaseMode) // 设置运行环境
 	r := gin.Default()           // 启动gin
